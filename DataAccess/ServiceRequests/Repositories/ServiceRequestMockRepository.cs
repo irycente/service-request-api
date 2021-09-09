@@ -1,6 +1,8 @@
 ﻿using Business.ServiceRequests;
+using Domain.Contants;
 using Domain.Dto;
 using Domain.Entities;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace DataAccess.ServiceRequests.Repositories
         {
             if(!serviceRequests.Any())
             {
-                // TODO: Throw custom exception.
+                throw new NoResourcesAvailableException(ErrorMessages.NO_RESOURCES_AVAILABLE);
             }
 
             return serviceRequests;
@@ -34,7 +36,7 @@ namespace DataAccess.ServiceRequests.Repositories
             
             if(request == null)
             {
-                // TODO: Throw custom exception.
+                throw new ResourceNotFoundException(ErrorMessages.RESOURCE_NOT_FOUND);
             }
 
             return request;
