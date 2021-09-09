@@ -1,4 +1,5 @@
 using Business.ServiceRequests;
+using Business.ServiceRequests.Validators;
 using DataAccess.ServiceRequests.Repositories;
 using Domain.Entities.Mocks;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,8 @@ namespace ServiceRequestApi
             });
 
             services.AddSingleton<IServiceRequestRepository>(x => new ServiceRequestMockRepository(ServiceRequestMocks.ServiceRequests));
+            services.AddTransient<ServiceRequestCreateValidator>();
+            services.AddTransient<ServiceRequestUpdateValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

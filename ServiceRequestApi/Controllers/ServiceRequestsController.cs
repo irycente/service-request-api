@@ -1,4 +1,5 @@
 ﻿using Business.ServiceRequests;
+using Business.ServiceRequests.Validators;
 using Domain.Contants;
 using Domain.Dto;
 using Domain.Entities;
@@ -15,10 +16,17 @@ namespace ServiceRequestApi.Controllers
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestRepository repository;
+        private readonly ServiceRequestUpdateValidator updateValidator;
+        private readonly ServiceRequestCreateValidator createValidator;
 
-        public ServiceRequestsController(IServiceRequestRepository repository)
+        public ServiceRequestsController(
+            IServiceRequestRepository repository, 
+            ServiceRequestUpdateValidator updateValidator, 
+            ServiceRequestCreateValidator createValidator)
         {
             this.repository = repository;
+            this.updateValidator = updateValidator;
+            this.createValidator = createValidator;
         }
 
         [HttpGet]
@@ -67,11 +75,18 @@ namespace ServiceRequestApi.Controllers
                 return BadRequest(ErrorMessages.EMPTY_REQUEST);
             }
 
-            // TODO: Apply business validations.
+            try
+            {
+                createValidator.Validate(requestDto);
 
-            var newRequest = repository.Create(requestDto);
+                var newRequest = repository.Create(requestDto);
 
-            return CreatedAtAction(nameof(GetById), newRequest.Id, newRequest);
+                return CreatedAtAction(nameof(GetById), newRequest.Id, newRequest);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(ex.Message);                
+            }
         }
 
         [HttpPut]
@@ -88,11 +103,15 @@ namespace ServiceRequestApi.Controllers
 
             try
             {
-                // TODO: Apply business validations.
+                updateValidator.Validate(requestDto);
 
                 repository.Update(requestDto);
 
                 return Ok();
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (ResourceNotFoundException ex)
             {
