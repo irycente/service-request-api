@@ -81,7 +81,7 @@ namespace ServiceRequestApi.Controllers
 
                 var newRequest = repository.Create(requestDto);
 
-                return CreatedAtAction(nameof(GetById), newRequest.Id, newRequest);
+                return CreatedAtAction(nameof(GetById), new { id = newRequest.Id }, newRequest);
             }
             catch (BusinessException ex)
             {
