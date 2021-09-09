@@ -1,3 +1,6 @@
+using Business.ServiceRequests;
+using DataAccess.ServiceRequests.Repositories;
+using Domain.Entities.Mocks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,6 +35,8 @@ namespace ServiceRequestApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServiceRequestApi", Version = "v1" });
             });
+
+            services.AddSingleton<IServiceRequestRepository>(x => new ServiceRequestMockRepository(ServiceRequestMocks.ServiceRequests));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

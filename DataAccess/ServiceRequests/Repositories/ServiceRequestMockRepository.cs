@@ -3,6 +3,7 @@ using Domain.Dto;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataAccess.ServiceRequests.Repositories
 {
@@ -15,29 +16,51 @@ namespace DataAccess.ServiceRequests.Repositories
             serviceRequests = mockedServiceRequests;
         }
 
-        public ServiceRequest Create(ServiceRequestCreateDto newRequestInfo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<ServiceRequest> GetAll()
         {
-            throw new NotImplementedException();
+            if(!serviceRequests.Any())
+            {
+                // TODO: Throw custom exception.
+            }
+
+            return serviceRequests;
         }
 
         public ServiceRequest GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var request = serviceRequests
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+            
+            if(request == null)
+            {
+                // TODO: Throw custom exception.
+            }
+
+            return request;
+        }
+
+        public ServiceRequest Create(ServiceRequestCreateDto newRequestInfo)
+        {
+            var newRequest = new ServiceRequest(newRequestInfo);
+
+            serviceRequests.Add(newRequest);
+
+            return newRequest;
         }
 
         public void Update(ServiceRequestUpdateDto requestUpdate)
         {
-            throw new NotImplementedException();
+            var requestToUpdate = GetById(requestUpdate.Id);
+
+            requestToUpdate.Update(requestUpdate);
+        }
+
+        public void Delete(Guid id)
+        {
+            var requestToDelete = GetById(id);
+
+            serviceRequests.Remove(requestToDelete);
         }
     }
 }
